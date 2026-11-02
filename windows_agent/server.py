@@ -20,7 +20,7 @@ def magic_packet(mac):
     if not valid_mac(mac):
         raise ValueError("Invalid MAC address")
     raw = bytes.fromhex(mac.replace(":", ""))
-    return b"\\xff" * 6 + raw * 16
+    return b"\xff" * 6 + raw * 16
 
 def wake(mac):
     packet = magic_packet(mac)
@@ -41,7 +41,7 @@ def media(action):
 def audio(process, mute):
     if os.name != "nt":
         raise RuntimeError("Windows only")
-    if not isinstance(process, str) or not re.fullmatch(r"[a-zA-Z0-9_.-]{1,100}\\.exe", process, re.I):
+    if not isinstance(process, str) or not re.fullmatch(r"[a-zA-Z0-9_.-]{1,100}\.exe", process, re.I):
         raise ValueError("Invalid executable name")
     if type(mute) is not bool:
         raise ValueError("mute must be a boolean")
