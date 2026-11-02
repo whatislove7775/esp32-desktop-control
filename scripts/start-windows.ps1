@@ -7,8 +7,9 @@ if (-not (Get-Command py -ErrorAction SilentlyContinue)) {
 py -m pip install -r requirements.txt
 if (-not $env:DESKTOP_CONTROL_TOKEN -or $env:DESKTOP_CONTROL_TOKEN.Length -lt 24) {
   $bytes = New-Object byte[] 32
-  [System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
-  $env:DESKTOP_CONTROL_TOKEN = [Convert]::ToHexString($bytes)
+  $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+  try { $rng.GetBytes($bytes) } finally { $rng.Dispose() }
+  $env:DESKTOP_CONTROL_TOKEN = [BitConverter]::ToString($bytes).Replace("-", "")
   Write-Host "Generated temporary token (copy into the ESP32 sketch; keep it private):"
   Write-Host $env:DESKTOP_CONTROL_TOKEN
 }
